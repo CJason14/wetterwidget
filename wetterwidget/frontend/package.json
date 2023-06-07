@@ -10,8 +10,11 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "axios": "^0.21.1",
+    "cors": "^2.8.5",
     "vue": "^3.3.2",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "vue-chartjs": "^5.0.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",

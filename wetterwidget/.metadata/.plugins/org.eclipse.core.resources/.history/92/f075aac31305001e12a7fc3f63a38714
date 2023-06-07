@@ -1,0 +1,5 @@
+package com.wetterwidget.backend.entities;
+
+public class Favoriten {
+
+}

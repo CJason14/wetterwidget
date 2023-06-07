@@ -1,0 +1,14 @@
+package com.wetterwidget.backend.facade.dto;
+
+
+public class AirDto{
+		
+	private String stadt;
+	
+	private String openWeatherId;
+	
+	private int luftfeuchtigkeit;
+	
+	private int luftdruck;
+	
+}

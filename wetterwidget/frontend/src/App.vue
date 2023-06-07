@@ -1,5 +1,11 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+  import { onBeforeMount } from 'vue';
+import {
+    RouterLink,
+    RouterView
+  } from 'vue-router'
+
+
 </script>
 
 <template>
@@ -7,7 +13,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped>
-body{
+  body {
     background-color: blue;
-}
+  }
 </style>

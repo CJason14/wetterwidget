@@ -1,3 +1,18 @@
 body{
     background: white;
 }
+
+.fontmain{
+    font-family: 'Geologica', sans-serif;
+    color: #84A4FC;
+    text-align: center;
+}
+
+.headline{
+    font-size: 60px;
+    font-family: 'Geologica', sans-serif;
+    color: #84A4FC;
+    margin: 0;
+    padding: 0;
+    margin-bottom: -20px;
+}
