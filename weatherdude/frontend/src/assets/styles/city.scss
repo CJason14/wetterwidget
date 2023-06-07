@@ -1,0 +1,39 @@
+
+.backgroundcenter {
+  position: sticky;
+  top: 20px;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.currentdate{
+    margin-top: 20px;
+}
+
+.tempinfo {
+    padding-top: 0px;
+    font-size: 90px;
+    font-weight: bold;
+    margin-left: 40px;
+}
+
+.bottomforecast{
+    position: absolute;
+    bottom: -100vh;
+    width: 100vw;
+}
+p {
+     margin: 0;
+     padding: 0;
+}
+.maindiv{
+    height: 100vh;
+}
+.mainimage{
+    width: 80vw;
+    z-index: 0;
+    position: sticky;
+    top: 20px;
+}

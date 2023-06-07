@@ -1,0 +1,56 @@
+[
+      {
+		 "name": "Berlin",
+         "wetterinfo": {},
+         "openWeatherId": "2950158",
+         "lat": "52.5243700",
+         "lng": "13.4105300"
+      },
+      {
+		"name": "Hamburg",
+        "wetterinfo": {},
+        "openWeatherId": "2911298",
+        "lat": "53.5753200",
+        "lng": "10.0153400"
+      },
+
+      {
+	    "name": "München",
+       "wetterinfo": {},
+        "openWeatherId": "3220838",        
+        "lat": "48.1374300",
+        "lng": "11.5754900"
+      },
+	  {
+		"name": "Köln",
+        "wetterinfo": {},
+        "openWeatherId": "2886242",        
+        "lat": "50.941278",
+        "lng": "6.958281"
+      },
+	  {
+		"name": "Frankfurt a.M.",
+        "wetterinfo": {},
+        "openWeatherId": "3220968",        
+        "lat": "50.1109221",
+        "lng": "8.6821267"
+      },
+	  {
+	    "name":"Essen",
+        "wetterinfo": {},
+        "openWeatherId": "6553024",        
+        "lat": "51.4556432",
+        "lng": "7.0115552"
+      },
+	  {
+	    "name":"Stuttgart",
+        "wetterinfo": {},
+        "openWeatherId": "3220785",        
+        "lat": "48.7758459",
+        "lng": "9.1829321"
+      }
+	
+	
+	      
+	  
+    ]

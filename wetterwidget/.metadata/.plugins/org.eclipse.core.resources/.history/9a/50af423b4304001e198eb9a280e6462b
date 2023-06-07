@@ -1,0 +1,5 @@
+package com.wetterwidget.facade;
+
+public class WetterDataController {
+
+}

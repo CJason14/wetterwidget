@@ -1,0 +1,151 @@
+package com.wetterwidget.backend.entities;
+
+import java.util.UUID;
+
+public class Wetterdaten {
+	
+	private UUID id;
+	
+	private int bewölkung;
+	
+	private int luftdruck;
+	
+	private int luftfeuchtigkeit;
+	
+	private int niederschlag;
+	
+	private float temperatur_aktuell;
+
+	private float temperatur_gefuehlt;
+
+	private float temperatur_min;
+
+	private float temperatur_max;
+	
+	private float wind_geschwindigkeit;
+	
+	private int   wind_richtung;
+
+	
+	public UUID getId() {
+		return id;
+	}
+	
+	public void setId(UUID id) {
+		this.id = id;
+	}
+	
+	public int getBewölkung() {
+		return bewölkung;
+	}
+	
+	public void setBewölkung(int bewölkung) {
+		this.bewölkung = bewölkung;
+	}
+	
+	public int getLuftdruck() {
+		return luftdruck;
+	}
+	
+	public void setLuftdruck(int luftdruck) {
+		this.luftdruck = luftdruck;
+	}
+	
+	public int getLuftfeuchtigkeit() {
+		return luftfeuchtigkeit;
+	}
+	
+	public void setLuftfeuchtigkeit(int luftfeuchtigkeit) {
+		this.luftfeuchtigkeit = luftfeuchtigkeit;
+	}
+	
+	public int getNiederschlag() {
+		return niederschlag;
+	}
+	
+	public void setNiederschlag(int niederschlag) {
+		this.niederschlag = niederschlag;
+	}
+	
+	public float getTemperatur_gefuehlt() {
+		return temperatur_gefuehlt;
+	}
+	
+	public void setTemperatur_gefuehlt(float temperatur_gefuehlt) {
+		this.temperatur_gefuehlt = temperatur_gefuehlt;
+	}
+	
+	public float getTemperatur_aktuell() {
+		return temperatur_aktuell;
+	}
+	
+	public void setTemperatur_aktuell(float temperatur_aktuell) {
+		this.temperatur_aktuell = temperatur_aktuell;
+	}
+	
+	 public float getTemperatur_min()
+	  {
+	    return temperatur_min;
+	  }
+
+	  public void setTemperatur_min(float temperatur_min)
+	  {
+	    this.temperatur_min = temperatur_min;
+	  }
+
+	  public float getTemperatur_max()
+	  {
+	    return temperatur_max;
+	  }
+
+	  public void setTemperatur_max(float temperatur_max)
+	  {
+	    this.temperatur_max = temperatur_max;
+	  }
+
+	  public float getWind_geschwindigkeit()
+	  {
+	    return wind_geschwindigkeit;
+	  }
+
+	  public void setWind_geschwindigkeit(float wind_geschwindigkeit)
+	  {
+	    this.wind_geschwindigkeit = wind_geschwindigkeit;
+	  }
+
+	  public int getWind_richtung()
+	  {
+	    return wind_richtung;
+	  }
+
+	  public void setWind_richtung(int wind_richtung)
+	  {
+	    this.wind_richtung = wind_richtung;
+	  }
+
+	
+	  @Override
+	  public String toString()
+	  {
+	    return "Wetterdaten [id=" + id + ", temperatur_aktuell=" + temperatur_aktuell + ", temperatur_gefuehlt="
+	        + temperatur_gefuehlt + ", temperatur_min=" + temperatur_min + ", temperatur_max=" + temperatur_max
+	        + ", luftdruck=" + luftdruck + ", luftfeuchtigkeit=" + luftfeuchtigkeit + ", wind_geschwindigkeit="
+	        + wind_geschwindigkeit + ", wind_richtung=" + wind_richtung + ", bewölkung=" + bewölkung + ", niederschlag="
+	        + niederschlag + "]";
+	  }
+
+	  public void transferAktuelleWetterdaten(Wetterdaten wetterdaten)
+	  {
+	    this.setTemperatur_aktuell(wetterdaten.getTemperatur_aktuell());
+	    this.setTemperatur_gefuehlt(wetterdaten.getTemperatur_gefuehlt());
+	    this.setTemperatur_min(wetterdaten.getTemperatur_min());
+	    this.setTemperatur_max(wetterdaten.getTemperatur_max());
+	    this.setLuftdruck(wetterdaten.getLuftdruck());
+	    this.setLuftfeuchtigkeit(wetterdaten.getLuftfeuchtigkeit());
+	    this.setWind_geschwindigkeit(wetterdaten.getWind_geschwindigkeit());
+	    this.setWind_richtung(wetterdaten.getWind_richtung());
+	    this.setBewölkung(wetterdaten.getBewölkung());
+	    this.setNiederschlag(wetterdaten.getNiederschlag());
+	  }
+	  
+}

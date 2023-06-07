@@ -1,0 +1,84 @@
+[
+      {
+		 "name": "Berlin",
+         "wetterinfo": {},
+         "openWeatherId": "2950158",
+         "lat": "52.5243700",
+         "lng": "13.4105300"
+      },
+      {
+		"name": "Hamburg",
+        "wetterinfo": {},
+        "openWeatherId": "2911298",
+        "lat": "53.5753200",
+        "lng": "10.0153400"
+      },
+
+      {
+	    "name": "München",
+       "wetterinfo": {},
+        "openWeatherId": "3220838",        
+        "lat": "48.1374300",
+        "lng": "11.5754900"
+      },
+	  {
+		"name": "Düsseldorf",
+        "wetterinfo": {},
+        "openWeatherId": "2934246",        
+        "lat": "51.2277411",
+        "lng": "6.7734556"
+      },
+	  {
+		"name":"Dresden",
+        "wetterinfo": {},
+        "openWeatherId": "6551127",        
+        "lat": "51.0504088",
+        "lng": "13.7372621"
+      },
+	  {
+		"name": "Magdeburg",
+        "wetterinfo": {},
+        "openWeatherId": "2941501",        
+        "lat": "52.1205333",
+        "lng": "11.6276237"
+      },
+	  {
+	    "name":"Wiesbaden",
+        "wetterinfo": {},
+        "openWeatherId": "2809346",        
+        "lat": "50.0782184",
+        "lng": "8.2397608"
+      },
+	  {
+	    "name":"Stuttgart",
+        "wetterinfo": {},
+        "openWeatherId": "3220785",        
+        "lat": "48.7758459",
+        "lng": "9.1829321"
+      },
+	   {
+	    "name":"Bremen",
+        "wetterinfo": {},
+        "openWeatherId": "2944387",        
+        "lat": "53.0792962",
+        "lng": "8.8016937"
+      },
+	  {
+	    "name":"Schwerin",
+        "wetterinfo": {},
+        "openWeatherId": "2834284",        
+        "lat": "53.6355022",
+        "lng": "11.4012499"
+      },
+	    {
+	    "name":"Erfurt",
+        "wetterinfo": {},
+        "openWeatherId": "2929670",        
+        "lat": "50.9847679",
+        "lng": "11.0298799"
+      }
+     
+	      
+	  
+	  
+    ]

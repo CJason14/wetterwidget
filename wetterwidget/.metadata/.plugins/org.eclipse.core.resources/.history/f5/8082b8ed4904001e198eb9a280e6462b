@@ -1,0 +1,12 @@
+package com.wetterwidget.entities;
+
+import java.util.UUID;
+
+public class Wetterdaten {
+	
+	private UUID id;
+	
+	private int bewölkung;
+	
+	private int luftdruck;
+}

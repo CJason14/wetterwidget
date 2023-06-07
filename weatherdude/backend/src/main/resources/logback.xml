@@ -1,0 +1,25 @@
+<configuration>
+<property resource="application.properties" />
+
+<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+    	<pattern>[%-5level] [%d{yyyy-MM-dd HH:mm:ss}] > %-75.-100(%class{0}.%M) >   %msg%n</pattern>
+    </encoder>
+</appender>
+<appender name="WD_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+        <pattern>[%-5level] [%d{yyyy-MM-dd HH:mm:ss}] > %-75.-100(%class{0}.%M) >>> %msg%n</pattern>
+    </encoder>
+</appender>
+
+<logger name="com.gfi.ausbildung.weatherdude" level="${logging.weatherdude.level}" additivity="false">
+    <appender-ref ref="WD_STDOUT" />
+</logger>
+
+<root level="INFO">
+    <appender-ref ref="STDOUT" />
+</root>
+
+
+
+</configuration>

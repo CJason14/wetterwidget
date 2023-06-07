@@ -1,0 +1,20 @@
+{
+  "name": "The WeatherDude App",
+  "short_name": "WeatherDude",
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#0476F2",
+  "background_color": "#fff",
+  "icons": [
+    {
+      "src": "WD_klein.png",
+      "sizes": "144x144", 
+      "type": "image/png"
+    },
+    {
+      "src": "WD_gross.png",
+      "sizes": "512x512", 
+      "type": "image/png"
+    }
+  ]
+}
