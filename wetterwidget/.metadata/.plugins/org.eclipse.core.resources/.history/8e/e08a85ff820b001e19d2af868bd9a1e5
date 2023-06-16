@@ -1,0 +1,455 @@
+package com.wetterwidget.backend.services;
+
+
+import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wetterwidget.backend.utils.*;
+import com.wetterwidget.backend.facade.dto.CityDto;
+import com.wetterwidget.backend.facade.dto.WetterdatenDto;
+import com.wetterwidget.backend.entities.Ort;
+import com.wetterwidget.backend.entities.Wetterdaten;
+import com.wetterwidget.backend.entities.repositiories.OrtRepository;
+import com.wetterwidget.backend.entities.repositiories.WetterdatenRepository;
+
+
+@Service
+public class ApiService {
+	
+  @Value("${wetterwidget.api.key}")
+  private String       apiKey;
+
+  @Value("${wetterwidget.api.lang}")
+  private String       apiLang;
+
+  @Autowired
+  private ObjectMapper mapper;
+  
+  @Autowired
+  private WetterdatenRepository wetterrepo;
+  
+  @Autowired
+  private OrtRepository ortrepo;
+  
+  public WetterdatenDto getWeatherDataByCity(String cityName) {
+  	try 
+  	{
+  	RestTemplate restTemplate = new RestTemplate();
+      String url = "http://api.openweathermap.org/data/2.5/weather?q={city}&appid=f56decc156db3bb60627dc012bec274e&lang={apiLang}&units=metric";
+      
+      
+      ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, cityName, apiLang);
+      
+      String jsonResponse = response.getBody();
+      JsonNode root = mapper.readValue(jsonResponse, JsonNode.class);
+      JsonNodeParser nodeParser = new JsonNodeParser(root);
+      
+      return getAktuelleWetterdatenfromCoordinates(nodeParser.get("coord.lat").floatValue(), nodeParser.get("coord.lon").floatValue(), nodeParser.get("id").toString());
+  	
+  	}
+  	catch (JsonProcessingException e)
+      {
+        throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+      }  
+      
+      
+      }
+  	public String getCheckCity(String input) {
+  	      
+	  	try 
+	  	{
+  		  JsonNode rootcity = mapper.readValue(input, JsonNode.class);
+  	      JsonNodeParser nodeParsercity = new JsonNodeParser(rootcity);
+  	      
+	  	  RestTemplate restTemplate = new RestTemplate();
+	      String url = "http://api.openweathermap.org/data/2.5/weather?q={city}&appid=f56decc156db3bb60627dc012bec274e&lang={apiLang}&units=metric";
+	      
+	      ResponseEntity<String> response = restTemplate.getForEntity(url, String.class,nodeParsercity.get("stadt").toString().replace('"', ' '), apiLang);
+	      
+	      String jsonResponse = response.getBody();
+	      JsonNode root = mapper.readValue(jsonResponse, JsonNode.class);
+	      JsonNodeParser nodeParser = new JsonNodeParser(root);
+	      
+	      Ort ort = new Ort();
+	      
+	      ort.setLand(nodeParser.get("sys.country").toString().replace("\"", ""));
+	      ort.setLat(nodeParser.get("coords.lat").floatValue());
+	      ort.setLon(nodeParser.get("coords.lon").floatValue());
+	      ort.setOpenWeatherId(nodeParser.get("id").toString());
+	      ort.setStadt(nodeParser.get("name").toString().replace("\"", ""));
+	      
+	      List<Ort> ortrepos = ortrepo.findAll();
+	 
+	      for (int i = 0; ortrepo.findAll().size() > i; i ++) {
+	    		if(Integer.parseInt(ortrepos.get(i).getOpenWeatherId())  == Integer.parseInt(nodeParser.get("id").toString())) {
+	    			return jsonResponse;
+	    		}
+	      }
+	      ortrepo.save(ort);
+	      return jsonResponse;
+	  	
+	  	}
+	  	catch (JsonProcessingException e)
+	      {
+	        throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+	      }  
+	      
+	      
+	      }
+  
+  	public WetterdatenDto getWeatherDatabyweatherId(String ID) {
+  		try 
+  	  	{
+  		RestTemplate restTemplate = new RestTemplate();
+  		String url = "http://api.openweathermap.org/data/2.5/weather?id={weatherId}&appid=f56decc156db3bb60627dc012bec274e";
+
+  		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, ID, apiKey);
+        
+        String jsonResponse = response.getBody();
+        JsonNode root = mapper.readValue(jsonResponse, JsonNode.class);
+        JsonNodeParser nodeParser = new JsonNodeParser(root);
+        return getAktuelleWetterdatenfromCoordinates(nodeParser.get("coord.lat").floatValue(), nodeParser.get("coord.lon").floatValue(), ID);
+  	  	}
+  	  	catch (JsonProcessingException e)
+  	    {
+  	        throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+  	    } 
+  	}
+
+    public WetterdatenDto getAktuelleWetterdatenfromCoordinates(float lat, float lon, String ID)
+    {	
+    	try 
+    	{
+  		
+    	
+			List<Wetterdaten> daten = wetterrepo.findAllByopenweatherid(ID);
+			if (daten.size() > 0) {
+				int index = 0;
+				int max = 0;
+				for(int i = 0; i < daten.size(); i++) {
+					if(daten.get(i).getUnix_timestamp() > max) {
+						max = daten.get(i).getUnix_timestamp();
+						index = i;
+					}
+				}
+				RestTemplate restTemplateunix = new RestTemplate();
+		  		String urlunix = "https://currentmillis.com/time/minutes-since-unix-epoch.php";
+		
+		  		ResponseEntity<String> responseunix = restTemplateunix.getForEntity(urlunix, String.class);
+			
+	        
+	  		if((Integer.parseInt(responseunix.getBody()) * 60) > (daten.get(index).getUnix_timestamp() + 1200)) {
+	  			System.out.println("Update");
+	  			
+	  	    	RestTemplate template = new RestTemplate();
+	  	    	String url = "http://api.openweathermap.org/data/2.5/find?lat={lat}&lon={lon}&appid=f56decc156db3bb60627dc012bec274e&exclude=minutely,hourly&lang={apiLang}&units=metric";
+
+	  	        ResponseEntity<String> response = template.getForEntity(url, String.class, lat,lon, "de");
+	  	        
+	  	        String jsonResponse = response.getBody();
+	  	        JsonNode root = mapper.readValue(jsonResponse, JsonNode.class);
+	  	        JsonNodeParser nodeParser = new JsonNodeParser(root);
+	  	        
+	  	        WetterdatenDto wetterdaten = new WetterdatenDto();
+	  	        Wetterdaten wetter = new Wetterdaten();
+	  	        
+	  	        
+	  	        String stadt = nodeParser.get("list.0.name").toString().replace('"', ' ');
+	  	        wetterdaten.setStadt(stadt);
+	  	        wetter.setStadt(stadt);
+	  	        
+	  	        float latvar = nodeParser.get("list.0.coord.lat").floatValue();
+	  	        wetterdaten.setLat(latvar);
+	  	        wetter.setLat(latvar);
+	  	        
+	  	        float lonvar = nodeParser.get("list.0.coord.lon").floatValue();
+	  	        wetterdaten.setLon(lonvar);
+	  	        wetter.setLon(lonvar);
+	  	        
+	  	        int bewölkung = nodeParser.get("list.0.clouds.all").intValue();
+	  	        wetterdaten.setBewölkung(bewölkung);
+	  	        wetter.setBewölkung(bewölkung);
+	  	        
+	  	        int luftdruck = nodeParser.get("list.0.main.pressure").intValue();
+	  	        wetterdaten.setLuftdruck(luftdruck);
+	  	        wetter.setLuftdruck(luftdruck);
+	  	        
+	  	        int luftfeuchtigkeit = nodeParser.get("list.0.main.humidity").intValue();
+	  	        wetterdaten.setLuftfeuchtigkeit(luftfeuchtigkeit);
+	  	        wetter.setLuftfeuchtigkeit(luftfeuchtigkeit);
+	  	        
+	  	        int niederschlag = nodeParser.get("list.0.rain").intValue();
+	  	        wetterdaten.setNiederschlag(niederschlag);
+	  	        wetter.setNiederschlag(niederschlag);
+	  	        
+	  	        float temperatur_aktuell = nodeParser.get("list.0.main.temp").intValue();
+	  	        wetterdaten.setTemperatur_aktuell(temperatur_aktuell);
+	  	        wetter.setTemperatur_aktuell(temperatur_aktuell);
+	  	        
+	  	        float temperatur_gefuehlt = nodeParser.get("list.0.main.feels_like").intValue();
+	  	        wetterdaten.setTemperatur_gefuehlt(temperatur_gefuehlt);
+	  	        wetter.setTemperatur_gefuehlt(temperatur_gefuehlt);
+	  	        
+	  	        float temperatur_min = nodeParser.get("list.0.main.temp_min").intValue();
+	  	        wetterdaten.setTemperatur_min(temperatur_min);
+	  	        wetter.setTemperatur_min(temperatur_min);
+	  	        
+	  	        float temperatur_max = nodeParser.get("list.0.main.temp_max").intValue();
+	  	        wetterdaten.setTemperatur_max(temperatur_max);
+	  	        wetter.setTemperatur_max(temperatur_max);
+	  	        
+	  	        float wind_geschwindigkeit = nodeParser.get("list.0.wind.speed").floatValue();
+	  	        wetterdaten.setWind_geschwindigkeit(wind_geschwindigkeit);
+	  	        wetter.setTemperatur_min(temperatur_min);
+	  	        
+	  	        int wind_richtung = nodeParser.get("list.0.wind.deg").intValue();
+	  	        wetterdaten.setWind_richtung(wind_richtung);
+	  	        wetter.setWind_richtung(wind_richtung);
+	  	        
+	  	        String kurzBeschreibung = nodeParser.get("list.0.weather.0.description").toString().replace('"', ' ');
+	  	        wetterdaten.setKurzBeschreibung(kurzBeschreibung);
+	  	        wetter.setKurz_beschreibung(kurzBeschreibung);
+	  	        
+		        wetter.setUnix_timestamp(Integer.parseInt(responseunix.getBody()) * 60);
+		        
+		        wetter.setOpenweatherid(ID);
+		        wetterdaten.setOpenweatherid(ID);
+	  	        
+	  			wetterrepo.save(wetter);
+	  			
+	  			return wetterdaten;
+	  		}
+			 WetterdatenDto wetterdaten = new WetterdatenDto();
+			 wetterdaten.setStadt(daten.get(index).getStadt());
+			 wetterdaten.setLat(daten.get(index).getLat());
+			 wetterdaten.setLon(daten.get(index).getLon());
+			 wetterdaten.setBewölkung(daten.get(index).getBewölkung());
+			 wetterdaten.setLuftdruck(daten.get(index).getLuftdruck());
+			 wetterdaten.setLuftfeuchtigkeit(daten.get(index).getLuftfeuchtigkeit());
+			 wetterdaten.setNiederschlag(daten.get(index).getNiederschlag());
+			 wetterdaten.setTemperatur_aktuell(daten.get(index).getTemperatur_aktuell());
+			 wetterdaten.setTemperatur_gefuehlt(daten.get(index).getTemperatur_gefuehlt());
+			 wetterdaten.setTemperatur_min(daten.get(index).getTemperatur_min());
+			 wetterdaten.setTemperatur_max(daten.get(index).getTemperatur_max());
+			 wetterdaten.setWind_richtung(daten.get(index).getWind_richtung());
+			 wetterdaten.setWind_geschwindigkeit(daten.get(index).getWind_geschwindigkeit());
+			 wetterdaten.setKurzBeschreibung(daten.get(index).getKurz_beschreibung());
+			 
+			 return wetterdaten;
+		}
+		else {
+			System.out.println("First City entry");
+  	    	RestTemplate template = new RestTemplate();
+  	    	String url = "http://api.openweathermap.org/data/2.5/find?lat={lat}&lon={lon}&appid=f56decc156db3bb60627dc012bec274e&exclude=minutely,hourly&lang={apiLang}&units=metric";
+
+  	        ResponseEntity<String> response = template.getForEntity(url, String.class, lat,lon, "de");
+  	        
+  	        String jsonResponse = response.getBody();
+  	        JsonNode root = mapper.readValue(jsonResponse, JsonNode.class);
+  	        JsonNodeParser nodeParser = new JsonNodeParser(root);
+  	        
+  	        WetterdatenDto wetterdaten = new WetterdatenDto();
+  	        Wetterdaten wetter = new Wetterdaten();
+  	        
+  	        
+  	        String stadt = nodeParser.get("list.0.name").toString().replace('"', ' ');
+  	        wetterdaten.setStadt(stadt);
+  	        wetter.setStadt(stadt);
+  	        
+  	        float latvar = nodeParser.get("list.0.coord.lat").floatValue();
+  	        wetterdaten.setLat(latvar);
+  	        wetter.setLat(latvar);
+  	        
+  	        float lonvar = nodeParser.get("list.0.coord.lon").floatValue();
+  	        wetterdaten.setLon(lonvar);
+  	        wetter.setLon(lonvar);
+  	        
+  	        int bewölkung = nodeParser.get("list.0.clouds.all").intValue();
+  	        wetterdaten.setBewölkung(bewölkung);
+  	        wetter.setBewölkung(bewölkung);
+  	        
+  	        int luftdruck = nodeParser.get("list.0.main.pressure").intValue();
+  	        wetterdaten.setLuftdruck(luftdruck);
+  	        wetter.setLuftdruck(luftdruck);
+  	        
+  	        int luftfeuchtigkeit = nodeParser.get("list.0.main.humidity").intValue();
+  	        wetterdaten.setLuftfeuchtigkeit(luftfeuchtigkeit);
+  	        wetter.setLuftfeuchtigkeit(luftfeuchtigkeit);
+  	        
+  	        int niederschlag = nodeParser.get("list.0.rain").intValue();
+  	        wetterdaten.setNiederschlag(niederschlag);
+  	        wetter.setNiederschlag(niederschlag);
+  	        
+  	        float temperatur_aktuell = nodeParser.get("list.0.main.temp").intValue();
+  	        wetterdaten.setTemperatur_aktuell(temperatur_aktuell);
+  	        wetter.setTemperatur_aktuell(temperatur_aktuell);
+  	        
+  	        float temperatur_gefuehlt = nodeParser.get("list.0.main.feels_like").intValue();
+  	        wetterdaten.setTemperatur_gefuehlt(temperatur_gefuehlt);
+  	        wetter.setTemperatur_gefuehlt(temperatur_gefuehlt);
+  	        
+  	        float temperatur_min = nodeParser.get("list.0.main.temp_min").intValue();
+  	        wetterdaten.setTemperatur_min(temperatur_min);
+  	        wetter.setTemperatur_min(temperatur_min);
+  	        
+  	        float temperatur_max = nodeParser.get("list.0.main.temp_max").intValue();
+  	        wetterdaten.setTemperatur_max(temperatur_max);
+  	        wetter.setTemperatur_max(temperatur_max);
+  	        
+  	        float wind_geschwindigkeit = nodeParser.get("list.0.wind.speed").floatValue();
+  	        wetterdaten.setWind_geschwindigkeit(wind_geschwindigkeit);
+  	        wetter.setWind_geschwindigkeit(wind_geschwindigkeit);;
+  	        
+  	        int wind_richtung = nodeParser.get("list.0.wind.deg").intValue();
+  	        wetterdaten.setWind_richtung(wind_richtung);
+  	        wetter.setWind_richtung(wind_richtung);
+  	        
+  	        String kurzBeschreibung = nodeParser.get("list.0.weather.0.description").toString().replace('"', ' ');
+  	        wetterdaten.setKurzBeschreibung(kurzBeschreibung);
+  	        wetter.setKurz_beschreibung(kurzBeschreibung);
+  	        
+  	        RestTemplate restTemplateunix = new RestTemplate();
+	  		String urlunix = "https://currentmillis.com/time/minutes-since-unix-epoch.php";
+	
+	  		ResponseEntity<String> responseunix = restTemplateunix.getForEntity(urlunix, String.class);
+  	        
+	        wetter.setUnix_timestamp(Integer.parseInt(responseunix.getBody()) * 60);
+	        
+	        wetter.setOpenweatherid(ID);
+  	        
+  			wetterrepo.save(wetter);
+  			
+  			return wetterdaten;
+		}
+			
+    	}
+    	catch (JsonProcessingException e)
+        {
+          throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+        }   
+    }
+    
+    
+    public CityDto findCityfromCoordinates(float lat, float lon)
+    {	
+    	try 
+    	{
+    		RestTemplate template = new RestTemplate();
+    	      String url = "https://api.openweathermap.org/data/2.5/find?lat={lat}&lon={lon}&cnt={cnt}&appid=f56decc156db3bb60627dc012bec274e&lang={apiLang}&units=metric";
+    	      int numberCities = 1;
+
+    	      ResponseEntity<String> response = template.getForEntity(url, String.class, lat, lon, numberCities,
+    	          apiLang);
+
+    	      if (response.getStatusCode() == HttpStatus.OK)
+    	      {
+    	        String jsonResponse = response.getBody();
+    	        JsonNode root = mapper.readValue(jsonResponse, JsonNode.class);
+    	        JsonNodeParser nodeParser = new JsonNodeParser(root);
+
+    	        CityDto setCityDto = new CityDto();
+
+		        String openWeatherId = nodeParser.get("list.0.id").toString();
+		        setCityDto.setOpenWeatherId(openWeatherId);
+		        
+		        String stadt = nodeParser.get("list.0.name").toString().replace("\"", "");
+		        setCityDto.setStadt(stadt);
+		        
+		        float latvar = nodeParser.get("list.0.coord.lat").floatValue();
+		        setCityDto.setLat(latvar);
+    	        
+		        float lonvar = nodeParser.get("list.0.coord.lon").floatValue();
+		        setCityDto.setLon(lonvar);
+
+    	        return setCityDto;
+    	      }
+    	      else
+    	      {
+    	        throw new IllegalStateException(
+    	            "Exception on api call. Status expected: " + HttpStatus.OK + " - GOT: " + response.getStatusCode() + "!");
+    	      }
+    	       
+		}
+        catch (JsonProcessingException e)
+        {
+          throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+        }   
+
+    }
+    public String getOpenweatherID(String cityName) {
+      	try 
+      	{
+      	RestTemplate restTemplate = new RestTemplate();
+          String url = "http://api.openweathermap.org/data/2.5/weather?q={city}&appid=f56decc156db3bb60627dc012bec274e&lang={apiLang}&units=metric";
+          
+          
+          ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, cityName, apiLang);
+          
+          String jsonResponse = response.getBody();
+          JsonNode root = mapper.readValue(jsonResponse, JsonNode.class);
+          JsonNodeParser nodeParser = new JsonNodeParser(root);
+          
+          return nodeParser.get("id").toString();
+      	
+      	}
+      	catch (JsonProcessingException e)
+          {
+            throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+          }  
+          
+          
+          }
+    public List<String> getForecastbyOpenweatherID(String ID) {
+  		try 
+  	  	{
+  		RestTemplate restTemplate = new RestTemplate();
+  		String url = "http://api.openweathermap.org/data/2.5/weather?id={weatherId}&appid=f56decc156db3bb60627dc012bec274e";
+
+  		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, ID, apiKey);
+        
+        String jsonResponse = response.getBody();
+        JsonNode root = mapper.readValue(jsonResponse, JsonNode.class);
+        JsonNodeParser nodeParser = new JsonNodeParser(root);
+        return getForecastbyCoords(nodeParser.get("coord.lat").floatValue(), nodeParser.get("coord.lon").floatValue(), ID);
+  	  	}
+  	  	catch (JsonProcessingException e)
+  	    {
+  	        throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+  	    } 
+  	}
+    public List<String> getForecastbyCoords(float lat, float lon, String ID) {
+    	try 
+  	  	{
+    		RestTemplate template = new RestTemplate();
+	    	String url = "http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=f56decc156db3bb60627dc012bec274e&lang={apiLang}&units=metric";
+
+	        ResponseEntity<String> response = template.getForEntity(url, String.class, lat, lon, "de");
+	        
+	        String jsonResponse = response.getBody();
+	        JsonNode root = mapper.readValue(jsonResponse, JsonNode.class);
+	        JsonNodeParser nodeParser = new JsonNodeParser(root);
+	        List<String> list =  new ArrayList<>();
+	        for( int i = 0; 24 > i; i++){
+	        	list.add(nodeParser.get("list." + i + ".main.temp").toString());
+	        	System.out.println(nodeParser.get("list." + i + ".main").toString());
+	        }
+	        
+	        
+	        return list;
+	  	  }
+	  	  	catch (JsonProcessingException e)
+	  	    {
+	  	        throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+	  	    } 
+    }
+      
+}

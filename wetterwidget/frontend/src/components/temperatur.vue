@@ -1,5 +1,5 @@
 <template>
-    <RouterLink :to="{ name: 'city', params: { weatherid: '' + wetter.openWeatherId  + '' } }" class="PreviewTemp">
+    <a  v-bind:href="'/city/' + this.weatherid" class="PreviewTemp">
         <div class="StadtNameForecast">
             {{ wetter.stadt }}
         </div>
@@ -30,25 +30,33 @@
             </div>
         </div>
 
-    </RouterLink>
+    </a>
 </template>
 
 <script>
+    var pathArray = window.location.pathname.split('/');
+    var secondLevelLocation = pathArray[2];
+
     import axios from 'axios'
     export default {
+        props: {
+            weatherid: {
+                type: String,
+                required: true
+            }
+        },
         name: "temperatur",
 
         data: () => ({
-                url: window.location.protocol +
-                    "//" +
-                    window.location.hostname +
-                    ":8081/wetterdata/temperatur",
                 wetter: {}
                 }),
 
         async created() {
             await axios
-                .get(this.url)
+                .get(window.location.protocol +
+                    "//" +
+                    window.location.hostname +
+                    ":8081/wetterdata/temperatur/" + this.weatherid)
                 .then(response => {(this.wetter = response.data)})
         }
         }
@@ -66,22 +74,6 @@
         color: #84A4FC;
     }
 
-    .textaligncenter {
-        text-align: center;
-    }
-
-    .flexvertical {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .flexhorizontal {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-evenly;
-
-    }
-
     .pink {
         background: pink;
         min-width: 20px;
@@ -89,14 +81,4 @@
         margin: 5px;
     }
 
-    .PreviewTemp {
-        display: block;
-        margin: 20px;
-        width: 200px;
-        height: 102px;
-        background-color: #CCD0D8;
-        border-radius: 20px;
-        padding: 10px;
-        overflow: hidden;
-    }
 </style>

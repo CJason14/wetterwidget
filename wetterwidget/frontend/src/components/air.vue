@@ -1,5 +1,5 @@
 <template>
-    <RouterLink :to="{ name: 'city', params: { weatherid: '' + wetter.openWeatherId  + '' } }" class="PreviewTemp">
+    <a v-bind:href="'/city/' + this.weatherid" class="PreviewTemp">
         <div class="StadtNameForecast">
             {{ wetter.stadt }}
             <br>
@@ -9,34 +9,42 @@
             <div class="flexvertical textaligncenter font">
                 Feuchtigkeit
                 <br>
-                {{ wetter.luftfeuchtigkeit }}
+                {{ wetter.luftfeuchtigkeit }}%
             </div>
             <div class="flexvertical textaligncenter font">
                 Druck
                 <br>
-                {{ wetter.luftdruck }}
+                {{ wetter.luftdruck }} hPa
             </div>
         </div>
 
-    </RouterLink>
+    </a>
 </template>
 
 <script>
+    var pathArray = window.location.pathname.split('/');
+    var secondLevelLocation = pathArray[2];
+
     import axios from 'axios'
     export default {
+        props: {
+            weatherid: {
+                type: String,
+                required: true
+            }
+        },
         name: "air",
 
         data: () => ({
-                url: window.location.protocol +
-                    "//" +
-                    window.location.hostname +
-                    ":8081/wetterdata/air",
                 wetter: {}
                 }),
 
         async created() {
             await axios
-                .get(this.url)
+                .get(window.location.protocol +
+                    "//" +
+                    window.location.hostname +
+                    ":8081/wetterdata/air/" + this.weatherid)
                 .then(response => {(this.wetter = response.data)})
         }
         }

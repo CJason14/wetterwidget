@@ -1,0 +1,21 @@
+package com.wetterwidget.backend.repositiories;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.wetterwidget.backend.entities.Ort;
+
+@Repository
+public interface OrtRepository extends JpaRepository<Ort, UUID>
+{
+  List<Ort> findByStadt(String stadt);
+
+  Ort findByOpenWeatherId(String openWeatherId);
+
+  List<Ort> findByStadtContainingIgnoreCaseOrderByStadtAsc(String stadt);
+
+  List<Ort> findByStadtStartsWithIgnoreCaseOrderByStadtAsc(String stadt);
+}

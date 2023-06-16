@@ -1,0 +1,117 @@
+package com.wetterwidget.backend.facade;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.wetterwidget.backend.entities.*;
+import com.wetterwidget.backend.facade.dto.*;
+import com.wetterwidget.backend.services.ApiService;
+
+
+@CrossOrigin
+@RestController
+@RequestMapping("/wetterdata")
+public class WetterDataController {
+	
+	 @Autowired
+	 private ApiService   apiService;
+	
+	@CrossOrigin
+    @GetMapping("/online")
+	public int getStatus() {
+		return 1;
+	}
+    @GetMapping("/preview")
+    public String preview() {
+      return String.format("Hello Test");
+    }
+    
+    @CrossOrigin
+    @GetMapping("/air/{id}")
+    public AirDto getAir(@PathVariable String id) {
+    	AirDto dto = new AirDto();
+    	dto.setLuftdruck(10);
+    	dto.setLuftfeuchtigkeit(9);
+    	dto.setOpenWeatherId("100");
+    	dto.setStadt("Dortmund");
+    	System.out.println("Anfrage: Air");
+    	return dto;
+    }
+    
+    @CrossOrigin
+    @GetMapping("/city/{id}")
+    public CityDto getCity(@PathVariable String id) {
+    	CityDto dto = new CityDto();
+    	dto.setAktuelle_temperatur(10);
+    	dto.setLuftfeuchtigkeit(9);
+    	dto.setOpenWeatherId("100");
+    	dto.setStadt("Dortmund");
+    	System.out.println("Anfrage: City");
+    	return dto;
+    }
+    
+    @CrossOrigin
+    @GetMapping("/cityweather/{id}")
+    public CityWeatherDto getCityWeather(@PathVariable String id) {
+    	CityWeatherDto dto = new CityWeatherDto();
+    	dto.setAktuelle_temperatur(10);
+    	dto.setKurzBeschreibung("Klarer Himmel");
+    	dto.setOpenWeatherId("100");
+    	dto.setStadt("Dortmund");
+    	System.out.println("Anfrage: CityWeather");
+    	return dto;
+    }
+    
+    @CrossOrigin
+    @GetMapping("/temperatur/{id}")
+    public TemperaturDto getTemperatur(@PathVariable String id) {
+    	TemperaturDto dto = new TemperaturDto();
+    	dto.setTemperatur_aktuell(10);
+    	dto.setTemperatur_gefuehlt(12);
+    	dto.setTemperatur_max(15);
+    	dto.setTemperatur_min(7);
+    	dto.setOpenWeatherId("100");
+    	dto.setStadt("Dortmund");
+    	System.out.println("Anfrage: Temperatur");
+    	return dto;
+    }
+    
+    @CrossOrigin
+    @GetMapping("/wind/{id}")
+    public WindDto getWind(@PathVariable String id) {
+    	WetterdatenDto wetterdaten = apiService.getWeatherDatabyweatherId(id);
+    	WindDto dto = new WindDto();
+    	dto.setWindrichtung(wetterdaten.getWind_richtung());
+    	dto.setWindgeschwindigkeit(wetterdaten.getWind_geschwindigkeit());
+    	dto.setOpenWeatherId(id);
+    	dto.setStadt(wetterdaten.getStadt());
+    	System.out.println("Anfrage: Wind");
+    	return dto;
+    }
+    
+    @CrossOrigin
+    @GetMapping("/wetterdaten/{id}")
+    public WetterdatenDto getWetterdaten(@PathVariable String id) {
+    	return apiService.getWeatherDatabyweatherId(id);
+    }
+    
+    @CrossOrigin
+    @PutMapping("/findcity")
+    public CityDto findcity(@RequestBody Position pos) {
+    	return apiService.findCityfromCoordinates(pos.getLat(), pos.getLon());
+    }
+    
+    @CrossOrigin
+    @PutMapping("/checkcity")
+    public String checkcity(@RequestBody String input) {
+    	System.out.println("Anfrage: Checkcity");
+    	return apiService.getCheckCity(input);
+    }
+}
+

@@ -14,4 +14,8 @@ public class CityDto {
 	public int luftfeuchtigkeit;
 	
 	public float aktuelle_temperatur;
+	
+	public float lat;
+	
+	public float lon;
 }

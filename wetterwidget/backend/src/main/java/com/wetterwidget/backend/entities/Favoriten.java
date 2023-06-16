@@ -2,18 +2,19 @@ package com.wetterwidget.backend.entities;
 
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
 @Entity
+@Table(name = "Favoriten")
 public class Favoriten {
 	  @Id
 	  @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,7 +22,13 @@ public class Favoriten {
 	  @JsonIgnore
 	  private UUID   user_id;
 	  
-	  private String openweatherid_stadt;
+	  private String cookieid;
 	  
-	  private int widgetnumber;
+	  private String openweatheridstadt;
+	  
+	  private String widgetnumber;
+	  
+	  private String stadt;
+	  
+	  private String count;
 }

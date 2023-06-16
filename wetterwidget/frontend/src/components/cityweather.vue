@@ -1,5 +1,5 @@
 <template>
-    <RouterLink :to="{ name: 'city', params: { weatherid: '' + wetter.openWeatherId  + '' } }" class="Preview">
+    <a  v-bind:href="'/city/' + this.weatherid" class="Preview">
         <div class="Infocityweather">
             <div class="StadtName">
                 {{ wetter.stadt }}
@@ -14,25 +14,33 @@
             {{ wetter.aktuelle_temperatur }}°
         </div>
 
-    </RouterLink>
+    </a>
 </template>
 
 <script>
+    var pathArray = window.location.pathname.split('/');
+    var secondLevelLocation = pathArray[2];
+
     import axios from 'axios'
     export default {
+        props: {
+            weatherid: {
+                type: String,
+                required: true
+            }
+        },
         name: "cityweather",
 
         data: () => ({
-                url: window.location.protocol +
-                    "//" +
-                    window.location.hostname +
-                    ":8081/wetterdata/cityweather",
                 wetter: {}
                 }),
 
         async created() {
             await axios
-                .get(this.url)
+                .get(window.location.protocol +
+                    "//" +
+                    window.location.hostname +
+                    ":8081/wetterdata/cityweather/" + this.weatherid)
                 .then(response => {(this.wetter = response.data)})
         }
         }
@@ -41,16 +49,6 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Geologica:wght@500&display=swap');
 
-    .Preview {
-        display: block;
-        margin: 20px;
-        width: 200px;
-        height: 70px;
-        background-color: #CCD0D8;
-        border-radius: 20px;
-        padding: 10px;
-        overflow: hidden;
-    }
 
     .Infocityweather {
         position: relative;

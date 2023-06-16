@@ -1,0 +1,79 @@
+package com.wetterwidget.backend.services;
+
+import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wetterwidget.backend.utils.JsonNodeParser;
+import com.wetterwidget.backend.entities.Favoriten;
+import com.wetterwidget.backend.entities.repositiories.FavoritenRepository;
+import com.wetterwidget.backend.facade.dto.FavoritenDto;
+
+
+@Service
+public class DataService {
+	
+	@Autowired
+	private ObjectMapper mapper;
+	
+	@Autowired
+	private ApiService   apiService;
+	
+	@Autowired
+	private FavoritenRepository favoritenrepo;
+
+
+	
+	public String setFavoriten(String input) {
+		try 
+	  	{
+    	JsonNode root = mapper.readValue(input, JsonNode.class);
+	    JsonNodeParser nodeParser = new JsonNodeParser(root);
+	    int len  = favoritenrepo.findAllBycookieid(nodeParser.get("useruuid").toString().replace("\"", "")).size();
+        if (len < 6) {
+        	Favoriten favoriten = new Favoriten();
+    	    favoriten.setCookieid(nodeParser.get("useruuid").toString().replace("\"", ""));
+    	    String city = nodeParser.get("city").toString().replace("\"", "");
+    	    favoriten.setOpenweatheridstadt(apiService.getWeatherDataByCity(city).getOpenweatherid());
+    	    favoriten.setWidgetnumber(nodeParser.get("component").toString().replace("\"", ""));
+    	    favoritenrepo.save(favoriten);
+        }
+        return apiService.getWeatherDataByCity(nodeParser.get("city").toString().replace("\"", "")).getOpenweatherid();
+	    }
+	  	catch (JsonProcessingException e)
+	      {
+	        throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+	     }  
+		
+	}
+	
+	public List<FavoritenDto> getFavoriten(String input){
+		try {
+            JsonNode root = mapper.readValue(input, JsonNode.class);
+            JsonNodeParser nodeParser = new JsonNodeParser(root);
+            List<Favoriten> fav = favoritenrepo.findAllBycookieid(nodeParser.get("useruuid").toString().replace("\"", ""));
+            List<FavoritenDto> favdto =  new ArrayList<>();
+            for( int i = 0;fav.size() > i; i++){
+            	FavoritenDto favdtotemp = new FavoritenDto();
+            	favdtotemp.setCookieid(fav.get(i).getCookieid());
+            	favdtotemp.setOpenweatherid_stadt(fav.get(i).getOpenweatheridstadt());
+            	favdtotemp.setWidgetnumber(fav.get(i).getWidgetnumber());
+            	favdto.add(favdtotemp);
+            }
+            FavoritenDto favdtotemp = new FavoritenDto();
+        	favdtotemp.setCookieid("2");
+        	favdtotemp.setOpenweatherid_stadt("1");
+        	favdtotemp.setWidgetnumber("2");
+        	favdto.add(favdtotemp);
+            return favdto;
+    	}
+    	catch (JsonProcessingException e)
+        {
+          throw new IllegalStateException("Exception parsing json entity from api call response!", e);
+        }
+	}
+}

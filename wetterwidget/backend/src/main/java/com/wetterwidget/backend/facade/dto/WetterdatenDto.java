@@ -1,7 +1,5 @@
 package com.wetterwidget.backend.facade.dto;
 
-import java.util.UUID;
-
 import lombok.Data;
 
 @Data
@@ -28,4 +26,12 @@ public class WetterdatenDto {
 	private float wind_geschwindigkeit;
 	
 	private int   wind_richtung;
+	
+	private String kurzBeschreibung;
+	
+	public float lat;
+	
+	public float lon;
+	
+	public String openweatherid;
 }

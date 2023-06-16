@@ -11,5 +11,5 @@ public class WindDto {
 	
 	private int windrichtung;
 	
-	private int windgeschwindigkeit;
+	private float windgeschwindigkeit;
 }

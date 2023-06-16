@@ -1,10 +1,11 @@
 <script setup>
-  import { onBeforeMount } from 'vue';
+import { onBeforeMount } from 'vue';
+import SimpleTypeahead from 'vue3-simple-typeahead';
+
 import {
     RouterLink,
     RouterView
   } from 'vue-router'
-
 
 </script>
 

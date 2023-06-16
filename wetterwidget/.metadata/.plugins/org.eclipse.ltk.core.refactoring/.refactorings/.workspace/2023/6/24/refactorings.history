@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 0 elements to &apos;backend/src/main/java/com.wetterwidget.backend.facade.dto&apos;&#x0D;&#x0A;- Destination element: &apos;backend/src/main/java/com.wetterwidget.backend.facade.dto&apos;" description="Copy compilation units" destination="=backend/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.wetterwidget.backend.facade.dto" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1686579023902" units="0" version="1.0"/>
+</session>

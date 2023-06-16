@@ -1,0 +1,19 @@
+package com.wetterwidget.backend.entities;
+
+import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "Position")
+public class Position {
+	@Id
+	private float lat;
+	
+	private float lon;
+}

@@ -1,5 +1,5 @@
 <template>
-    <RouterLink :to="{ name: 'city', params: { weatherid: '' + wetter.openWeatherId  + '' } }" class="PreviewForecast">
+    <a v-bind:href="'/city/' + this.weatherid" class="PreviewForecast">
         <div class="StadtNameForecast">
             Dortmund
         </div>
@@ -19,7 +19,7 @@
 
         </div>
 
-    </RouterLink>
+    </a>
 </template>
 
 <script>
@@ -54,7 +54,7 @@
         width: 30px;
         background: blue;
         display: flex;
-        justify-contend: center;
+        justify-content: center;
         align-items: center;
     }
 

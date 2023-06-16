@@ -1,0 +1,15 @@
+package com.wetterwidget.backend.entities.repositiories;
+
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.wetterwidget.backend.entities.Favoriten;
+import com.wetterwidget.backend.entities.Wetterdaten;
+
+@Repository
+public interface FavoritenRepository extends JpaRepository<Favoriten, UUID>
+{
+	Favoriten findBycookieid(String cookieid);
+}

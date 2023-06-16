@@ -9,7 +9,8 @@ const router = createRouter({
       name: 'home',
       component: HomeView
     },
-    {
+    { 
+      canReuse: false,
       path: '/city/:weatherid',
       name: 'city',
       component: () => import('../views/CityView.vue')
