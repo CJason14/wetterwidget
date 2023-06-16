@@ -23,8 +23,8 @@
         <h3 class="fontmain">{{ answer.name }}</h3>
         <select class="fontmain searchbar" v-model="componentselect">
           <option value="Luft">Luft</option>
-          <option value="Stadt">Stadt</option>
-          <option value="cityweather">Stadt - Wetter</option>
+          <option value="Stadt">Stadt - kurzBeschreibung</option>
+          <option value="cityweather">Stadt - Luft & Niederschlag</option>
           <option value="Temperatur">Temperatur</option>
           <option value="Wind">Wind</option>
         </select>
@@ -111,7 +111,7 @@
               component: this.componentselect
             })
           .then(response => {
-            document.location.href="/?popupdata=Erfolgreich erstellt!";
+            document.location.href="/?popupdata=" + response.data;
           })
         }
         else{

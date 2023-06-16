@@ -8,7 +8,7 @@
         <p class="fontmain">AktuellerStandort</p>
       </a>
       <br>
-      <h3 class="fontmain">Favoriten</h3>
+      <h3 class="fontmain favoritentitel">Favoriten</h3>
       <RouterLink class="fontmain link unterheadline" :to="{name:'edit'}">
         <p>Bearbeiten</p>
       </RouterLink>
@@ -113,7 +113,8 @@ export default {
     margin: 0;
   }
 
-  .unterheadline {
-    margin-top: -20px;
+
+  .favoritentitel{
+    margin: 0;
   }
   </style>

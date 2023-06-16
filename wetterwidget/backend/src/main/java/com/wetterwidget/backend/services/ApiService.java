@@ -47,6 +47,7 @@ public class ApiService {
             JsonNodeParser nodeParsercity = new JsonNodeParser(rootcity);
 
             RestTemplate restTemplate = new RestTemplate();
+            System.out.println("ApiAnfrage");
             String url = "http://api.openweathermap.org/data/2.5/weather?q={city}&appid=f56decc156db3bb60627dc012bec274e&lang={apiLang}&units=metric";
 
             ResponseEntity < String > response = restTemplate.getForEntity(url, String.class, nodeParsercity.get("stadt").toString().replace('"', ' '), apiLang);
@@ -102,7 +103,7 @@ public class ApiService {
 
                 if ((Integer.parseInt(responseunix.getBody()) * 60) > (daten.get(index).getUnix_timestamp() + 1200)) {
                     System.out.println("Update");
-
+                    System.out.println("ApiAnfrage");
                     RestTemplate template = new RestTemplate();
                     String url = "http://api.openweathermap.org/data/2.5/find?lat={lat}&lon={lon}&appid=f56decc156db3bb60627dc012bec274e&exclude=minutely,hourly&lang={apiLang}&units=metric";
 
@@ -201,6 +202,7 @@ public class ApiService {
             } else {
                 System.out.println("First City entry");
                 RestTemplate template = new RestTemplate();
+                System.out.println("ApiAnfrage");
                 String url = "http://api.openweathermap.org/data/2.5/find?lat={lat}&lon={lon}&appid=f56decc156db3bb60627dc012bec274e&exclude=minutely,hourly&lang={apiLang}&units=metric";
 
                 ResponseEntity < String > response = template.getForEntity(url, String.class, lat, lon, "de");
@@ -292,6 +294,7 @@ public class ApiService {
     public CityDto findCityfromCoordinates(float lat, float lon) {
         try {
             RestTemplate template = new RestTemplate();
+            System.out.println("ApiAnfrage");
             String url = "https://api.openweathermap.org/data/2.5/find?lat={lat}&lon={lon}&cnt={cnt}&appid=f56decc156db3bb60627dc012bec274e&lang={apiLang}&units=metric";
             int numberCities = 1;
 
@@ -331,6 +334,7 @@ public class ApiService {
     public String getOpenweatherID(String cityName) {
         try {
             RestTemplate restTemplate = new RestTemplate();
+            System.out.println("ApiAnfrage");
             String url = "http://api.openweathermap.org/data/2.5/weather?q={city}&appid=f56decc156db3bb60627dc012bec274e&lang={apiLang}&units=metric";
 
 

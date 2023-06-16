@@ -49,8 +49,9 @@ public class FavoritenDatenService {
     	    favoriten.setStadt(city);
     	    favoriten.setCount(Integer.toString(len));
     	    favoritenrepo.save(favoriten);
+    	    return "Erfolgreich erstellt!";
         }
-        return wetterdatenservice.getWeatherDataByCity(nodeParser.get("city").toString().replace("\"", "")).getOpenweatherid();
+        return "Maximum erreicht!";
 	    }
 	  	catch (JsonProcessingException e)
 	      {
