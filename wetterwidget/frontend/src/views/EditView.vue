@@ -11,7 +11,7 @@
       </div>
       <div>
         <vue3-simple-typeahead id="typeahead_id" placeholder="Suche nach Stadt..." :items="this.cities"
-          :minInputLength="1" v-on:selectItem="checkcity" v-on:keyup.enter="checkcity" v-model="search"
+          :minInputLength="1" v-on:selectItem="checkcity" v-on:keyup.enter="checkcity" v-on:onBlur="checkcity" v-model="search"
           class="searchbar fontmain">
         </vue3-simple-typeahead>
 
@@ -23,8 +23,8 @@
         <h3 class="fontmain">{{ answer.name }}</h3>
         <select class="fontmain searchbar" v-model="componentselect">
           <option value="Luft">Luft</option>
-          <option value="Stadt">Stadt - kurzBeschreibung</option>
-          <option value="cityweather">Stadt - Luft & Niederschlag</option>
+          <option value="cityweather">Stadt - kurzBeschreibung</option>
+          <option value="Stadt">Stadt - Luft & Niederschlag</option>
           <option value="Temperatur">Temperatur</option>
           <option value="Wind">Wind</option>
         </select>

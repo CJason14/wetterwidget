@@ -7,7 +7,7 @@
     <div class="container">
       <div class="PreviewCity"><iframe class="RainView"
           style="width: 100%; border: none; height: 100%; background-color: transparent; border-radius: 10px;"
-          v-bind:src="'https://www.wetter.de/widget/rain/#m=7/' + wetter.lat + '/' + wetter.lon + '/'"></iframe></div>
+          v-bind:src="'https://www.wetter.de/widget/rain/#m=7/' + (wetter.lat - 0.56) + '/' + wetter.lon + '/'"></iframe></div>
       <div class="PreviewCity"><iframe class="WindView" width="100%" height="100%"
           v-bind:src="'https://embed.windy.com/embed2.html?lat=' + wetter.lat + '&lon=' + wetter.lon + '&detailLat=' + wetter.lat + '&detailLon=' + wetter.lon + '&width=650&height=450&zoom=4&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1'"
           frameborder="0"></iframe>
@@ -100,6 +100,9 @@
       <div class="PreviewCity">
         <canvas id="line-chart-hum" width="800" height="450"></canvas>
       </div>
+      <div class="PreviewCity center">
+       <h3><a class="fontmain link" v-bind:href="'/historie/' + this.id">Historie</a></h3>
+      </div>
     </div>
   </main>
 </template>
@@ -119,7 +122,8 @@
         window.location.hostname +
         ":8081/wetterdata/wetterdaten/" + pathArray[2],
       wetter: {},
-      forecast: {}
+      forecast: {},
+      id: pathArray[2]
     }),
 
     async mounted() {
@@ -284,5 +288,11 @@
     height: 150px;
     margin-top: -22px;
     gap: 10px;
+  }
+
+  .center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>

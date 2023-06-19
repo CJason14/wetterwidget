@@ -1,5 +1,7 @@
 package com.wetterwidget.backend.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wetterwidget.backend.entities.Wetterdaten;
+import com.wetterwidget.backend.entities.repositiories.WetterdatenRepository;
 import com.wetterwidget.backend.facade.dto.WetterdatenDto;
 import com.wetterwidget.backend.utils.JsonNodeParser;
 
@@ -26,6 +30,9 @@ public class WetterDatenService {
 
     @Autowired
     private ApiService apiservice;
+    
+    @Autowired
+    private WetterdatenRepository wetterrepo;
 
     public WetterdatenDto getWeatherDataByCity(String cityName) {
         try {
@@ -62,5 +69,9 @@ public class WetterDatenService {
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Exception parsing json entity from api call response!", e);
         }
+    }
+    
+    public List<Wetterdaten> getWeatherHistoriebyweatherId(String ID){
+    	return wetterrepo.findAllByopenweatherid(ID);
     }
 }

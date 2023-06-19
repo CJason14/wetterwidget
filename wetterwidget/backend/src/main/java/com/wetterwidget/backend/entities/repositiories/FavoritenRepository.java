@@ -14,5 +14,5 @@ public interface FavoritenRepository extends JpaRepository<Favoriten, UUID>
 {
 	List<Favoriten> findAllBycookieid(String cookieid);
 	
-	int deleteAllByCookieidAndCount(String cookieid, String count);
+	int deleteAllByCookieidAndCountAndOpenweatheridstadt(String cookieid, String count, String openweatheridstadt);
 }

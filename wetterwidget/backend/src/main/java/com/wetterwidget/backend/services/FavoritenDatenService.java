@@ -25,9 +25,6 @@ public class FavoritenDatenService {
 	private ObjectMapper mapper;
 	
 	@Autowired
-	private WetterDatenService   wetterdatenservice;
-	
-	@Autowired
 	private FavoritenRepository favoritenrepo;
 	
 	@Autowired
@@ -90,8 +87,8 @@ public class FavoritenDatenService {
 		    
 		    String cookieid = nodeParser.get("cookieid").toString().replace("\"", "");
 		    String count = nodeParser.get("count").toString().replace("\"", "");
-		    
-		    favoritenrepo.deleteAllByCookieidAndCount(cookieid, count);
+		    String weatherid = nodeParser.get("openweatheridstadt").toString().replace("\"", "");
+		    favoritenrepo.deleteAllByCookieidAndCountAndOpenweatheridstadt(cookieid, count, weatherid);
 			
 		    return "True";
 		}

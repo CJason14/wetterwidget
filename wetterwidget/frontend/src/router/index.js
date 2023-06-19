@@ -19,6 +19,12 @@ const router = createRouter({
       path: '/edit',
       name: 'edit',
       component: () => import('../views/EditView.vue')
+    },
+    { 
+      canReuse: false,
+      path: '/historie/:weatherid',
+      name: 'historie',
+      component: () => import('../views/HistorieView.vue')
     }
   ]
 })

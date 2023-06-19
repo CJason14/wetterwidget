@@ -178,6 +178,15 @@ public class WetterDataController {
     @GetMapping("/forecast/{id}")
     public List < List < String >> getForeCast(@PathVariable String id) {
         System.out.println("Anfrage: GetForecast");
-        return forecastdatenservice.getForecastbyOpenweatherID(id);
+        return forecastdatenservice.getForecastbyOpenweatherID(id);      
     }
+    
+    @CrossOrigin
+    @GetMapping("/historie/{id}")
+    public List <Wetterdaten> getHistorie(@PathVariable String id) {
+        System.out.println("Anfrage: GetForecast");
+        return wetterdatenservice.getWeatherHistoriebyweatherId(id);     
+    }
+    
+    
 }

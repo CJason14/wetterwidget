@@ -1,0 +1,5 @@
+package com.wetterwidget.backend.services;
+
+public class ScheduleService {
+
+}

@@ -68,7 +68,7 @@
     }
 
     .StadtName {
-        font-size: 22px;
+        font-size: 20px;
         margin-left: -2px;
         max-width: 110px;
         overflow: hidden;

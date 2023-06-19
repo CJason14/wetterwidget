@@ -1,0 +1,16 @@
+package com.wetterwidget.backend.services;
+
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+
+@EnableScheduling
+public class ScheduleService {
+
+
+	@Scheduled(fixedRate=60*60*1000)
+	public void scheduleFixedRateTask() {
+	System.out.println(
+	  "Fixed rate task - " + System.currentTimeMillis() / 1000);
+	}
+
+}
